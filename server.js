@@ -1,6 +1,10 @@
 import dotenv from "dotenv"
 import express from "express"
 import morgan from "morgan"
+import notesRoutes from "./routes/notes.js"
+import { connectDB } from "./config/db.js"
+
+const app = express()
 app.use(express.json())
 app.use(morgan("dev"))
 dotenv.config(
@@ -9,10 +13,14 @@ dotenv.config(
     }
 )
 
-const app = express()
-app; get("/", (req, res) => {
-    res.send("hi")
-})
+app.use("/api/v1/notes", notesRoutes)
+
 app.listen(5000, () => {
-    console.log("HELLO")
+    try {
+        connectDB()
+        console.log("connectDB")
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        process.exit(1)
+    }
 })
